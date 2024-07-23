@@ -6,9 +6,10 @@ public class Product
     public string Name { get; set; }
     public double Price { get; set; }
     public Category Category { get; set; }
+    public bool IsDeleted { get; set; } = false;
 
     public static bool IsInvalidProduct(Product product)
     {
-        return string.IsNullOrEmpty(product.Name) || product.Price <= 0 || product.Category == Category.None;
+        return product is null || string.IsNullOrEmpty(product.Name) || product.Price <= 0 || product.Category == Category.None;
     }
 }

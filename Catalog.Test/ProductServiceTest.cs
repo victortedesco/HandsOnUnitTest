@@ -6,29 +6,31 @@ namespace Catalog.Test;
 public class ProductServiceTest
 {
     [Fact]
-    public void GetAll_ReturnsProducts()
+    public void GetAll_ReturnsOnlyNotDeletedProducts()
     {
         var productService = new ProductService();
 
         var products = new List<Product>
         {
-            new() { Name = "Product 1", Price = 11999.99, Category = Category.Eletronics },
-            new() { Name = "Product 2", Price = 999.99, Category = Category.Books },
-            new() { Name = "Product 3", Price = 3999.99, Category = Category.Pets },
+            new() { Name = "Product 1", Price = 11999.99, Category = Category.Eletronics, IsDeleted = false },
+            new() { Name = "Product 2", Price = 999.99, Category = Category.Books, IsDeleted = false },
+            new() { Name = "Product 3", Price = 3999.99, Category = Category.Pets, IsDeleted = true },
         };
 
         products.ForEach(p => productService.Add(p));
 
         var result = productService.GetAll();
 
-        Assert.Equal(products, result);
+        Assert.Equal(2, result.Count());
     }
 
     [Fact]
     public void GetById_ReturnsAnExistingProduct()
     {
-        var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
         var productService = new ProductService();
+
+        var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
+
         productService.Add(product);
 
         var result = productService.GetById(product.Id);
@@ -41,7 +43,23 @@ public class ProductServiceTest
     public void GetById_ReturnsNullForNonExistingProduct()
     {
         var productService = new ProductService();
+
         var result = productService.GetById(Guid.NewGuid());
+
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public void GetById_ReturnsNullForDeletedProduct()
+    {
+        var productService = new ProductService();
+
+        var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
+
+        productService.Add(product);
+        productService.Delete(product.Id);
+
+        var result = productService.GetById(product.Id);
 
         Assert.Null(result);
     }
@@ -71,6 +89,20 @@ public class ProductServiceTest
     }
 
     [Fact]
+    public void Add_ReturnsFalseIfProductHasTheSameIdAsAnother()
+    {
+        var productService = new ProductService();
+
+        var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
+
+        productService.Add(product);
+
+        var result = productService.Add(product);
+
+        Assert.False(result);
+    }
+
+    [Fact]
     public void Add_ReturnsFalseIfProductHaveInvalidParameters()
     {
         var productService = new ProductService();
@@ -83,10 +115,12 @@ public class ProductServiceTest
     }
 
     [Fact]
-    public void Delete_ReturnsTrueForExistingProduct()
+    public void Delete_ReturnsTrueForNonDeletedProduct()
     {
-        var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
         var productService = new ProductService();
+
+        var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
+
         productService.Add(product);
 
         var result = productService.Delete(product.Id);
@@ -95,9 +129,25 @@ public class ProductServiceTest
     }
 
     [Fact]
+    public void Delete_ReturnsFalseForDeletedProduct()
+    {
+        var productService = new ProductService();
+
+        var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
+
+        productService.Add(product);
+        productService.Delete(product.Id);
+
+        var result = productService.Delete(product.Id);
+
+        Assert.False(result);
+    }
+
+    [Fact]
     public void Delete_ReturnsFalseForNonExistingProduct()
     {
         var productService = new ProductService();
+
         var result = productService.Delete(Guid.NewGuid());
 
         Assert.False(result);
@@ -107,6 +157,7 @@ public class ProductServiceTest
     public void Update_ReturnsTrueIfRequestHaveAllParameters()
     {
         var productService = new ProductService();
+
         var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
 
         productService.Add(product);
@@ -121,6 +172,7 @@ public class ProductServiceTest
     public void Update_ReturnsFalseIfRequestDoesNotHaveAllParameters()
     {
         var productService = new ProductService();
+
         var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
 
         productService.Add(product);
@@ -135,6 +187,7 @@ public class ProductServiceTest
     public void Update_ReturnsFalseIfRequestHaveInvalidParameters()
     {
         var productService = new ProductService();
+
         var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
 
         productService.Add(product);
@@ -149,9 +202,11 @@ public class ProductServiceTest
     public void Update_ReturnsFalseForNonExistingProduct()
     {
         var productService = new ProductService();
+
         var request = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
 
         var result = productService.Update(Guid.NewGuid(), request);
+
         Assert.False(result);
     }
 
@@ -159,6 +214,7 @@ public class ProductServiceTest
     public void Update_ReturnsFalseForNullRequest()
     {
         var productService = new ProductService();
+
         var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
 
         productService.Add(product);

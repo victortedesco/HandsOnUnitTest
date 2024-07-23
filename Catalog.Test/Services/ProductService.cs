@@ -4,20 +4,22 @@ namespace Catalog.Test.Services;
 
 public class ProductService
 {
-    private readonly HashSet<Product> _products = [];
+    private readonly List<Product> _products = [];
 
     public IEnumerable<Product> GetAll()
     {
-        return _products.ToList();
+        return _products.Where(p => !p.IsDeleted).ToList();
     }
 
     public Product GetById(Guid id)
     {
-        return _products.FirstOrDefault(p => p.Id == id);
+        return _products.Where(p => !p.IsDeleted).FirstOrDefault(p => p.Id == id);
     }
 
     public bool Add(Product product)
     {
+        if (_products.FirstOrDefault(p => p.Id == product.Id) is not null)
+            return false;
         if (Product.IsInvalidProduct(product))
         {
             return false;
@@ -32,19 +34,21 @@ public class ProductService
     {
         var product = _products.FirstOrDefault(p => p.Id == id);
 
-        if (product == null)
+        if (product is null)
+            return false;
+        if (product.IsDeleted)
             return false;
 
-        _products.Remove(product);
+        product.IsDeleted = true;
 
         return true;
     }
 
     public bool Update(Guid id, Product request)
     {
-        var product = _products.FirstOrDefault(x => x.Id == id);
+        var product = _products.Where(p => !p.IsDeleted).FirstOrDefault(x => x.Id == id);
 
-        if (product == null || request == null)
+        if (product is null || request is null)
             return false;
 
         if (Product.IsInvalidProduct(request))
