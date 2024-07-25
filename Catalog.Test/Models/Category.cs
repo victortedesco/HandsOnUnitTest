@@ -2,7 +2,6 @@
 
 public enum Category : ushort
 {
-    None,
     Eletronics,
     Books,
     Pets,

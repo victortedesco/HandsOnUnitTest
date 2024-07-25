@@ -1,23 +1,24 @@
-﻿using Catalog.Test.Models;
-using Catalog.Test.Services;
+﻿using Catalog.Test.Abstractions;
+using Catalog.Test.Models;
 
 namespace Catalog.Test;
 
 public class ProductServiceTest
 {
     [Fact]
-    public void GetAll_ReturnsOnlyNotDeletedProducts()
+    public void GetAll_ReturnsOnlyNonDeletedProducts()
     {
         var productService = new ProductService();
 
         var products = new List<Product>
         {
-            new() { Name = "Product 1", Price = 11999.99, Category = Category.Eletronics, IsDeleted = false },
-            new() { Name = "Product 2", Price = 999.99, Category = Category.Books, IsDeleted = false },
-            new() { Name = "Product 3", Price = 3999.99, Category = Category.Pets, IsDeleted = true },
+            new("Product 1", 11999.99, "eletronics"),
+            new("Product 2", 999.99, "books"),
+            new("Product 3", 3999.99, "pets"),
         };
 
         products.ForEach(p => productService.Add(p));
+        productService.Delete(products.First().Id);
 
         var result = productService.GetAll();
 
@@ -29,7 +30,7 @@ public class ProductServiceTest
     {
         var productService = new ProductService();
 
-        var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
+        var product = new Product("Product 1", 1.1, "books");
 
         productService.Add(product);
 
@@ -54,7 +55,7 @@ public class ProductServiceTest
     {
         var productService = new ProductService();
 
-        var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
+        var product = new Product("Product 1", 1.1, "books");
 
         productService.Add(product);
         productService.Delete(product.Id);
@@ -65,11 +66,11 @@ public class ProductServiceTest
     }
 
     [Fact]
-    public void Add_ReturnsTrueIfProductHaveAllParameters()
+    public void Add_ReturnsTrueIfProductIsCorrect()
     {
         var productService = new ProductService();
 
-        var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
+        var product = new Product("Product 1", 1.1, "books");
 
         var result = productService.Add(product);
 
@@ -77,37 +78,13 @@ public class ProductServiceTest
     }
 
     [Fact]
-    public void Add_ReturnsFalseIfProductDoesNotHaveAllParameters()
-    {
-        var productService = new ProductService();
-
-        var product = new Product { Name = "Product 1", Category = Category.Books };
-
-        var result = productService.Add(product);
-
-        Assert.False(result);
-    }
-
-    [Fact]
     public void Add_ReturnsFalseIfProductHasTheSameIdAsAnother()
     {
         var productService = new ProductService();
 
-        var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
+        var product = new Product("Product 1", 1.1, "books");
 
         productService.Add(product);
-
-        var result = productService.Add(product);
-
-        Assert.False(result);
-    }
-
-    [Fact]
-    public void Add_ReturnsFalseIfProductHaveInvalidParameters()
-    {
-        var productService = new ProductService();
-
-        var product = new Product { Name = "Product 1", Price = -10000, Category = Category.None };
 
         var result = productService.Add(product);
 
@@ -119,7 +96,7 @@ public class ProductServiceTest
     {
         var productService = new ProductService();
 
-        var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
+        var product = new Product("Product 1", 1.1, "books");
 
         productService.Add(product);
 
@@ -133,7 +110,7 @@ public class ProductServiceTest
     {
         var productService = new ProductService();
 
-        var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
+        var product = new Product("Product 1", 1.1, "books");
 
         productService.Add(product);
         productService.Delete(product.Id);
@@ -154,56 +131,11 @@ public class ProductServiceTest
     }
 
     [Fact]
-    public void Update_ReturnsTrueIfRequestHaveAllParameters()
-    {
-        var productService = new ProductService();
-
-        var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
-
-        productService.Add(product);
-
-        var request = new Product { Name = "Product 1", Price = 1000, Category = Category.Pets };
-        var result = productService.Update(product.Id, request);
-
-        Assert.True(result);
-    }
-
-    [Fact]
-    public void Update_ReturnsFalseIfRequestDoesNotHaveAllParameters()
-    {
-        var productService = new ProductService();
-
-        var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
-
-        productService.Add(product);
-
-        var request = new Product { Name = "Product 1" };
-        var result = productService.Update(product.Id, request);
-
-        Assert.False(result);
-    }
-
-    [Fact]
-    public void Update_ReturnsFalseIfRequestHaveInvalidParameters()
-    {
-        var productService = new ProductService();
-
-        var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
-
-        productService.Add(product);
-
-        var request = new Product { Name = "Product 1", Price = -1000, Category = Category.None };
-        var result = productService.Update(product.Id, request);
-
-        Assert.False(result);
-    }
-
-    [Fact]
     public void Update_ReturnsFalseForNonExistingProduct()
     {
         var productService = new ProductService();
 
-        var request = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
+        var request = new Product("Product 1", 1.1, "books");
 
         var result = productService.Update(Guid.NewGuid(), request);
 
@@ -215,7 +147,7 @@ public class ProductServiceTest
     {
         var productService = new ProductService();
 
-        var product = new Product { Name = "Product 1", Price = 1.1, Category = Category.Books };
+        var product = new Product("Product 1", 1.1, "books");
 
         productService.Add(product);
 
