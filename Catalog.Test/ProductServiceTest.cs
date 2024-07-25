@@ -12,9 +12,9 @@ public class ProductServiceTest
 
         var products = new List<Product>
         {
-            new("Product 1", 11999.99, "eletronics"),
-            new("Product 2", 999.99, "books"),
-            new("Product 3", 3999.99, "pets"),
+            new("Product 1", 11999.99m, "eletronics"),
+            new("Product 2", 999.99m, "books"),
+            new("Product 3", 3999.99m, "pets"),
         };
 
         products.ForEach(p => productService.Add(p));
@@ -30,7 +30,7 @@ public class ProductServiceTest
     {
         var productService = new ProductService();
 
-        var product = new Product("Product 1", 1.1, "books");
+        var product = new Product("Product 1", 1.1m, "books");
 
         productService.Add(product);
 
@@ -55,7 +55,7 @@ public class ProductServiceTest
     {
         var productService = new ProductService();
 
-        var product = new Product("Product 1", 1.1, "books");
+        var product = new Product("Product 1", 1.1m, "books");
 
         productService.Add(product);
         productService.Delete(product.Id);
@@ -70,7 +70,7 @@ public class ProductServiceTest
     {
         var productService = new ProductService();
 
-        var product = new Product("Product 1", 1.1, "books");
+        var product = new Product("Product 1", 1.1m, "books");
 
         var result = productService.Add(product);
 
@@ -82,7 +82,7 @@ public class ProductServiceTest
     {
         var productService = new ProductService();
 
-        var product = new Product("Product 1", 1.1, "books");
+        var product = new Product("Product 1", 1.1m, "books");
 
         productService.Add(product);
 
@@ -96,7 +96,7 @@ public class ProductServiceTest
     {
         var productService = new ProductService();
 
-        var product = new Product("Product 1", 1.1, "books");
+        var product = new Product("Product 1", 1.1m, "books");
 
         productService.Add(product);
 
@@ -110,7 +110,7 @@ public class ProductServiceTest
     {
         var productService = new ProductService();
 
-        var product = new Product("Product 1", 1.1, "books");
+        var product = new Product("Product 1", 1.1m, "books");
 
         productService.Add(product);
         productService.Delete(product.Id);
@@ -135,7 +135,7 @@ public class ProductServiceTest
     {
         var productService = new ProductService();
 
-        var request = new Product("Product 1", 1.1, "books");
+        var request = new Product("Product 1", 1.1m, "books");
 
         var result = productService.Update(Guid.NewGuid(), request);
 
@@ -147,7 +147,7 @@ public class ProductServiceTest
     {
         var productService = new ProductService();
 
-        var product = new Product("Product 1", 1.1, "books");
+        var product = new Product("Product 1", 1.1m, "books");
 
         productService.Add(product);
 

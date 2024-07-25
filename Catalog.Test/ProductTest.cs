@@ -7,31 +7,48 @@ public class ProductTest
     [Fact]
     public void Product_ShouldInitizalizeIfEverythingIsOk()
     {
-        var product = new Product("Product", 10, "eletronics");
+        var product = new Product("Product", 10.1m, "eletronics");
 
         Assert.NotNull(product);
     }
 
-    [Fact]
-    public void WhenName_IsNullOrWhiteSpace_ShouldReturnArgumentNullException()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void WhenName_IsNullOrWhiteSpace_ShouldReturnArgumentException(string name)
     {
-        Action productInitAction = () => _ = new Product("          ", 1.1, "eletronics");
+        Action productInitAction = () => _ = new Product(name, 1.1m, "eletronics");
 
-        Assert.ThrowsAny<ArgumentNullException>(productInitAction);
+        Assert.ThrowsAny<ArgumentException>(productInitAction);
     }
 
     [Fact]
-    public void WhenPrice_IsLessThanOrEqualToZero_ShouldReturnArgumentOutOfRangeException()
+    public void WhenName_HasMoreThan50Characters_ShouldReturnArgumentException()
     {
-        Action productInitAction = () => _ = new Product("Product", -1, "eletronics");
+        var name = new string('a', 51);
+
+        Action productInitAction = () => _ = new Product(name, 1.1m, "eletronics");
+
+        Assert.ThrowsAny<ArgumentException>(productInitAction);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void WhenPrice_IsLessThanOrEqualToZero_ShouldReturnArgumentOutOfRangeException(decimal price)
+    {
+        Action productInitAction = () => _ = new Product("Product", price, "eletronics");
 
         Assert.ThrowsAny<ArgumentOutOfRangeException>(productInitAction);
     }
 
-    [Fact]
-    public void WhenCategory_IsNotValid_ShouldReturnArgumentException()
+    [Theory]
+    [InlineData(null)]
+    [InlineData("not_valid")]
+    public void WhenCategory_IsNotValid_ShouldReturnArgumentException(string category)
     {
-        Action productInitAction = () => _ = new Product("Product", 1.1, null);
+        Action productInitAction = () => _ = new Product("Product", 1.1m, category);
 
         Assert.ThrowsAny<ArgumentException>(productInitAction);
     }

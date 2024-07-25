@@ -28,7 +28,7 @@ public class ProductRepository : IProductRepository
     public bool Add(Product product)
     {
         if (_products.FirstOrDefault(p => p.Id == product.Id) is not null)
-            return false;
+            throw new InvalidOperationException($"A product with the id '{product.Id}' already exists.");
 
         _products.Add(product);
 
