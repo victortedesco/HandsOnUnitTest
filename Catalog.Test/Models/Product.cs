@@ -4,11 +4,11 @@ public class Product
 {
     public Product(string name, double price, string category)
     {
-        Id = Guid.NewGuid();
         ValidateName(name);
         ValidatePrice(price);
         ValidateCategory(category);
 
+        Id = Guid.NewGuid();
         Name = name;
         Price = price;
         Category = Enum.Parse<Category>(category, true);
