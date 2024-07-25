@@ -21,7 +21,7 @@ public class Product
     public Category Category { get; set; }
     public bool IsDeleted { get; set; }
 
-    public static void ValidateName(string name)
+    private static void ValidateName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new ArgumentException("The product name is required.");
@@ -29,13 +29,13 @@ public class Product
             throw new ArgumentException("The product name has more than 50 characters.");
     }
 
-    public static void ValidatePrice(decimal price)
+    private static void ValidatePrice(decimal price)
     {
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(price);
     }
 
-    public static void ValidateCategory(string category)
+    private static void ValidateCategory(string category)
     {
-        Enum.Parse<Category>(category, true);
+        _ = Enum.Parse<Category>(category, true);
     }
 }

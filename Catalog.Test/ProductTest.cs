@@ -4,33 +4,37 @@ namespace Catalog.Test;
 
 public class ProductTest
 {
-    [Fact]
-    public void Product_ShouldInitizalizeIfEverythingIsOk()
-    {
-        var product = new Product("Product", 10.1m, "eletronics");
-
-        Assert.NotNull(product);
-    }
 
     [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("   ")]
-    public void WhenName_IsNullOrWhiteSpace_ShouldReturnArgumentException(string name)
+    [InlineData("Computer")]
+    [InlineData("Cellphone")]
+    public void WhenName_LenghtIsLessThan50AndIsNotWhiteSpace_ShouldInitizalizeProduct(string name)
     {
-        Action productInitAction = () => _ = new Product(name, 1.1m, "eletronics");
+        var product = new Product(name, 1.1m, "eletronics");
 
-        Assert.ThrowsAny<ArgumentException>(productInitAction);
+        Assert.NotNull(product);
+        Assert.Equal(name, product.Name);
     }
 
     [Fact]
-    public void WhenName_HasMoreThan50Characters_ShouldReturnArgumentException()
+    public void WhenName_LenghtIsMoreThan50Characters_ShouldReturnArgumentException()
     {
         var name = new string('a', 51);
 
-        Action productInitAction = () => _ = new Product(name, 1.1m, "eletronics");
+        void productInitAction() => _ = new Product(name, 1.1m, "eletronics");
 
         Assert.ThrowsAny<ArgumentException>(productInitAction);
+    }
+
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2.1)]
+    public void WhenPrice_IsGreaterThanZero_ShouldInitizalizeProduct(decimal price)
+    {
+        var product = new Product("Product", price, "eletronics");
+
+        Assert.NotNull(product);
+        Assert.Equal(price, product.Price);
     }
 
     [Theory]
@@ -38,17 +42,32 @@ public class ProductTest
     [InlineData(-1)]
     public void WhenPrice_IsLessThanOrEqualToZero_ShouldReturnArgumentOutOfRangeException(decimal price)
     {
-        Action productInitAction = () => _ = new Product("Product", price, "eletronics");
+        void productInitAction() => _ = new Product("Product", price, "eletronics");
 
         Assert.ThrowsAny<ArgumentOutOfRangeException>(productInitAction);
     }
 
     [Theory]
+    [InlineData("eletronics")]
+    [InlineData("books")]
+    [InlineData("pets")]
+    public void WhenCategory_Exists_ShouldInitizalizeProduct(string category)
+    {
+        var product = new Product("Product", 1.1m, category);
+
+        Assert.NotNull(product);
+        Assert.Equal(category.ToLower(), product.Category.ToString().ToLower());
+    }
+
+    [Theory]
     [InlineData(null)]
-    [InlineData("not_valid")]
+    [InlineData("")]
+    [InlineData("   ")]
+    [InlineData("foods")]
+    [InlineData("invalid")]
     public void WhenCategory_IsNotValid_ShouldReturnArgumentException(string category)
     {
-        Action productInitAction = () => _ = new Product("Product", 1.1m, category);
+        void productInitAction() => _ = new Product("Product", 1.1m, category);
 
         Assert.ThrowsAny<ArgumentException>(productInitAction);
     }

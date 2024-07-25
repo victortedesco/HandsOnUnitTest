@@ -13,11 +13,15 @@ public interface IProductRepository
 
 public class ProductRepository : IProductRepository
 {
+    /* This was designed to be similar to DbSet<Product>, 
+     * but it does not provide some rules and methods,
+     * they are implemented in the methods of this class (line 34).
+    */
     private readonly List<Product> _products = [];
 
     public IEnumerable<Product> GetAll()
     {
-        return _products.ToList();
+        return _products;
     }
 
     public Product GetById(Guid id)

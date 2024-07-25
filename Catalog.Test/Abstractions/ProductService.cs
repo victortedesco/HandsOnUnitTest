@@ -13,6 +13,10 @@ public interface IProductService
 
 public class ProductService : IProductService
 {
+    /* This would be automatically injected via Dependency Injection,
+     * however, this project does not implements ASP.NET and Entity Framework
+     * so we need to instantiate ProductRepository here.
+     */
     private readonly IProductRepository _productRepository = new ProductRepository();
 
     public IEnumerable<Product> GetAll()
