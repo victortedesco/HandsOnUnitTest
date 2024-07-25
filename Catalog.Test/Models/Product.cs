@@ -12,13 +12,14 @@ public class Product
         Name = name;
         Price = price;
         Category = Enum.Parse<Category>(category, true);
+        IsDeleted = false;
     }
 
     public Guid Id { get; private set; }
     public string Name { get; set; }
     public double Price { get; set; }
     public Category Category { get; set; }
-    public bool IsDeleted { get; set; } = false;
+    public bool IsDeleted { get; set; }
 
     public static void ValidateName(string name)
     {
